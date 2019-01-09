@@ -8,6 +8,9 @@ const configModule = require("./components/config.js");
 const logger = require("./components/logger.js");
 const responseObj = require("./components/response.js");
 const errorHandlerModule = require("./components/error-handler.js");
+const msRestAzure = require('ms-rest-azure');
+const ApiManagementClient = require("azure-arm-apimanagement");
+
 
 module.exports.handler = (event, context, cb) => {
 
@@ -31,7 +34,7 @@ module.exports.handler = (event, context, cb) => {
     */
 
     const sampleResponse = {
-      "foo": "foo-value",
+      "foo": "this is a test of package json",
       "bar": "bar-value",
       "configKeys": myVal
     };
