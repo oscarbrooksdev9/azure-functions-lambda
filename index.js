@@ -8,8 +8,8 @@ const configModule = require("./components/config.js");
 const logger = require("./components/logger.js");
 const responseObj = require("./components/response.js");
 const errorHandlerModule = require("./components/error-handler.js");
-const msRestAzure = require('ms-rest-azure');
-const ApiManagementClient = require("azure-arm-apimanagement");
+
+const azureApi = require("./components/azureApi.js");
 
 
 module.exports.handler = (event, context, cb) => {
@@ -21,6 +21,9 @@ module.exports.handler = (event, context, cb) => {
 
   try {
 
+    logger.info('attempting to delete an API Gateway' + event.resourceGroupName);
+    
+    azureApi.deleteApi(event.resourceGroupName, event.serviceName, event.apiId, event.tenantId, event.subscriptionId, event.clientId, event.clientSecret)
     //Following is a code snippet to fetch values from config file:
     const myVal = config.configKey;
 
