@@ -8,7 +8,10 @@
   "scripts": {
     "test": "mocha"
   },
-  "dependencies": {},
+  "dependencies": {
+    "azure-arm-apimanagement": "^4.4.0-preview",
+    "ms-rest-azure": "^2.5.9"
+  },
   "devDependencies": {
     "chai": "^3.5.0",
     "mocha": "^v3.0.0"
