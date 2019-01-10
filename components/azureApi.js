@@ -19,6 +19,8 @@ function deleteApi(resourceGroupName, serviceName, apiId, tenantId, subscription
 }
 
 function createOrUpdate(resourceGroupName, serviceName, apiId, tenantId, subscriptionId, swaggerString, basepath, clientId, clientSecret) {
+    var swaggerString = JSON.stringify(JSON.parse(swaggerString));
+    
     var parameters = {
           "contentFormat": "swagger-json",
           "contentValue": swaggerString,
