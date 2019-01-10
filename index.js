@@ -21,9 +21,16 @@ module.exports.handler = (event, context, cb) => {
 
   try {
 
-    logger.info('attempting to delete an API Gateway' + event.resourceGroupName);
     
-    azureApi.deleteApi(event.resourceGroupName, event.serviceName, event.apiId, event.tenantId, event.subscriptionId, event.clientId, event.clientSecret)
+    var data = event.data;
+    if(event.action == "delete"){
+        logger.info('attempting to delete an API Gateway' + event.resourceGroupName);
+        azureApi.deleteApi(data.resourceGroupName, data.serviceName, data.apiId, data.tenantId, data.subscriptionId, data.clientId, data.clientSecret);
+    }
+    else{
+        logger.info('the value of data is: ' + event.action);
+    }
+    
     //Following is a code snippet to fetch values from config file:
     const myVal = config.configKey;
 
