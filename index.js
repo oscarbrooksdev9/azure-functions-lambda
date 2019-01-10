@@ -29,7 +29,7 @@ module.exports.handler = (event, context, cb) => {
     }
     else if(event.action == "create"){
         logger.info('the value of data is: ' + event.action);
-        azureApi.createOrUpdate(data.resourceGroupName, data.serviceName, data.apiId, data.tenantId, data.subscriptionId, data.swaggerString, data.basepath, data.clientId, data.clientSecret)
+        azureApi.createOrUpdate(data.resourceGroupName, data.serviceName, data.apiId, data.tenantId, data.subscriptionId, data.swagger, data.basepath, data.clientId, data.clientSecret);
     }
     
     //Following is a code snippet to fetch values from config file:
