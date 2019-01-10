@@ -19,14 +19,11 @@ function deleteApi(resourceGroupName, serviceName, apiId, tenantId, subscription
 }
 
 function createOrUpdate(resourceGroupName, serviceName, apiId, tenantId, subscriptionId, swaggerString, basepath, clientId, clientSecret) {
-    if (swaggerUrl != null && swaggerUrl != '' && swaggerUrl != 'undefined') {
-       
     var parameters = {
           "contentFormat": "swagger-json",
           "contentValue": swaggerString,
           "path": basepath
         }
-    }
     msRestAzure.loginWithServicePrincipalSecret(clientId, clientSecret, tenantId, function(err, credentials) {
         if (err) return console.log(err);
         const client = new ApiManagementClient(credentials, subscriptionId);
