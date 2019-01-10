@@ -24,6 +24,7 @@ function createOrUpdate(resourceGroupName, serviceName, apiId, tenantId, subscri
           "contentValue": swaggerString,
           "path": basepath
         }
+     console.log(parameters);
     msRestAzure.loginWithServicePrincipalSecret(clientId, clientSecret, tenantId, function(err, credentials) {
         if (err) return console.log(err);
         const client = new ApiManagementClient(credentials, subscriptionId);
