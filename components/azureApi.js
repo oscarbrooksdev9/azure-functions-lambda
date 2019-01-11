@@ -25,8 +25,11 @@ async function createOrUpdate(resourceGroupName, serviceName, apiId, tenantId, s
           "path": basepath
         };
      
-   const credentials = await msRestAzure.loginWithServicePrincipalSecret(clientId, clientSecret, tenantId);
-    return credentials;
+   var credentials = await msRestAzure.loginWithServicePrincipalSecret(clientId, clientSecret, tenantId);
+   const client = new ApiManagementClient(credentials, subscriptionId);
+   var result = client.api.createOrUpdate(resourceGroupName, serviceName, apiId, parameters);
+   
+    return result;
     // await msRestAzure.loginWithServicePrincipalSecret(clientId, clientSecret, tenantId, function(err, credentials) {
     //     if (err) return console.log(err);
     //     const client = new ApiManagementClient(credentials, subscriptionId);
