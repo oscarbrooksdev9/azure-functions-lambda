@@ -29,6 +29,7 @@ module.exports.handler = (event, context, cb) => {
     }
     else if(event.action == "create"){
         logger.info('the value of data is: ' + event.action);
+        logger.info('swagger data is: ' + data.swagger);
         azureApi.createOrUpdate(data.resourceGroupName, data.serviceName, data.apiId, data.tenantId, data.subscriptionId, data.swagger, data.basepath, data.clientId, data.clientSecret);
     }
     
