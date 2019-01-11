@@ -24,16 +24,16 @@ async function createOrUpdate(resourceGroupName, serviceName, apiId, tenantId, s
           "contentValue": JSON.stringify(swaggerString),
           "path": basepath
         };
+     
+   const credentials = await msRestAzure.loginWithServicePrincipalSecret(clientId, clientSecret, tenantId);
+    return credentials;
+    // await msRestAzure.loginWithServicePrincipalSecret(clientId, clientSecret, tenantId, function(err, credentials) {
+    //     if (err) return console.log(err);
+    //     const client = new ApiManagementClient(credentials, subscriptionId);
         
-    
-     console.log(parameters);
-    msRestAzure.loginWithServicePrincipalSecret(clientId, clientSecret, tenantId, function(err, credentials) {
-        if (err) return console.log(err);
-        const client = new ApiManagementClient(credentials, subscriptionId);
-        
-        client.api.createOrUpdate(resourceGroupName, serviceName, apiId, parameters, function(err, result) {
-          if (err) return err;
-          return result;
-        });
-      });
+    //     client.api.createOrUpdate(resourceGroupName, serviceName, apiId, parameters, function(err, result) {
+    //       if (err) return console.log(err);
+    //       return console.log(result);
+    //     });
+    //   });
     }
