@@ -12,7 +12,7 @@ const errorHandlerModule = require("./components/error-handler.js");
 const azureApi = require("./components/azureApi.js");
 
 
-module.exports.handler = (event, context, cb) => {
+module.exports.handler = async (event, context) => {
 
   //Initializations
   const config = configModule.getConfig(event, context);
@@ -30,7 +30,8 @@ module.exports.handler = (event, context, cb) => {
     else if(event.action == "create"){
         logger.info('the value of data is: ' + event.action);
         logger.info('swagger data is: ' + data.swagger);
-        azureApi.createOrUpdate(data.resourceGroupName, data.serviceName, data.apiId, data.tenantId, data.subscriptionId, data.swagger, data.basepath, data.clientId, data.clientSecret);
+        var result = await  azureApi.createOrUpdate(data.resourceGroupName, data.serviceName, data.apiId, data.tenantId, data.subscriptionId, data.swagger, data.basepath, data.clientId, data.clientSecret);
+        logger.info("result: " + result);
     }
     
     //Following is a code snippet to fetch values from config file:
@@ -51,11 +52,11 @@ module.exports.handler = (event, context, cb) => {
       "configKeys": myVal
     };
 
-    return cb(null, responseObj(sampleResponse, event));
+    return responseObj(sampleResponse, event);
 
   } catch (e) {
     //Sample Error response for internal server error
-    return cb(JSON.stringify(errorHandler.throwInternalServerError("Sample error message")));
+    return JSON.stringify(errorHandler.throwInternalServerError("Sample error message"));
 
     //Sample Error response for Not Found Error
     //cb(JSON.stringify(errorHandler.throwNotFoundError("Sample message")));
