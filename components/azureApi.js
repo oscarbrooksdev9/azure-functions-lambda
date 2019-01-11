@@ -21,19 +21,19 @@ function deleteApi(resourceGroupName, serviceName, apiId, tenantId, subscription
 async function createOrUpdate(resourceGroupName, serviceName, apiId, tenantId, subscriptionId, swaggerString, basepath, clientId, clientSecret) {
     var parameters = {
           "contentFormat": "swagger-json",
-          "contentValue": swaggerString,
+          "contentValue": JSON.stringify(swaggerString),
           "path": basepath
         };
         
-    return parameters;
-    //  console.log(parameters);
-    // msRestAzure.loginWithServicePrincipalSecret(clientId, clientSecret, tenantId, function(err, credentials) {
-    //     if (err) return console.log(err);
-    //     const client = new ApiManagementClient(credentials, subscriptionId);
+    
+     console.log(parameters);
+    msRestAzure.loginWithServicePrincipalSecret(clientId, clientSecret, tenantId, function(err, credentials) {
+        if (err) return console.log(err);
+        const client = new ApiManagementClient(credentials, subscriptionId);
         
-    //     client.api.createOrUpdate(resourceGroupName, serviceName, apiId, parameters, function(err, result) {
-    //       if (err) return err;
-    //       return result;
-    //     });
-    //   });
+        client.api.createOrUpdate(resourceGroupName, serviceName, apiId, parameters, function(err, result) {
+          if (err) return err;
+          return result;
+        });
+      });
     }
