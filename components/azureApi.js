@@ -30,8 +30,8 @@ function createOrUpdate(resourceGroupName, serviceName, apiId, tenantId, subscri
         const client = new ApiManagementClient(credentials, subscriptionId);
         
         client.api.createOrUpdate(resourceGroupName, serviceName, apiId, parameters, function(err, result) {
-          if (err) return console.log(err);
-          return console.log(result);
+          if (err) return err;
+          return result;
         });
       });
     }
