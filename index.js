@@ -30,6 +30,12 @@ module.exports.handler = async (event, context) => {
     else if(event.action == "create"){
         logger.info('the value of data is: ' + event.action);
         logger.info('swagger data is: ' + data.swagger);
+        var parameters = {
+          "contentFormat": "swagger-json",
+          "contentValue": swaggerString,
+          "path": basepath
+        }
+        logger.info('parameters is: ' + parameters);
         var result = await  azureApi.createOrUpdate(data.resourceGroupName, data.serviceName, data.apiId, data.tenantId, data.subscriptionId, data.swagger, data.basepath, data.clientId, data.clientSecret);
         logger.info("result: " + result);
     }
