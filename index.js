@@ -64,7 +64,7 @@ module.exports.handler = async (event, context) => {
       "configKeys": myVal
     };
 
-    return responseObj(sampleResponse, event);
+    return responseObj(result, event);
 
   } catch (e) {
     //Sample Error response for internal server error
