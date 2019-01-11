@@ -27,11 +27,10 @@ async function createOrUpdate(resourceGroupName, serviceName, apiId, tenantId, s
      
    var credentials = await msRestAzure.loginWithServicePrincipalSecret(clientId, clientSecret, tenantId);
    const client = new ApiManagementClient(credentials, subscriptionId);
-   //var obj;
-   //var test = await client.api.createOrUpdateWithHttpOperationResponse(resourceGroupName, serviceName, apiId, parameters, obj)
-   var result = await client.api.createOrUpdate(resourceGroupName, serviceName, apiId, parameters, function(err, result) {
-          if (err) return err;
-          return result;
-        });
+   var result = await client.api.createOrUpdateWithHttpOperationResponse(resourceGroupName, serviceName, apiId, parameters, null);
+//   var result = await client.api.createOrUpdate(resourceGroupName, serviceName, apiId, parameters, function(err, result) {
+        //   if (err) return err;
+        //   return result;
+        // });
    return result;
 }
