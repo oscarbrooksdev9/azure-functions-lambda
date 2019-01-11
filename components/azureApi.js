@@ -18,7 +18,7 @@ function deleteApi(resourceGroupName, serviceName, apiId, tenantId, subscription
       });
 }
 
-function createOrUpdate(resourceGroupName, serviceName, apiId, tenantId, subscriptionId, swaggerString, basepath, clientId, clientSecret) {
+async function createOrUpdate(resourceGroupName, serviceName, apiId, tenantId, subscriptionId, swaggerString, basepath, clientId, clientSecret) {
     return 
     var parameters = {
           "contentFormat": "swagger-json",
