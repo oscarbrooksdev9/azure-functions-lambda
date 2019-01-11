@@ -37,7 +37,7 @@ module.exports.handler = async (event, context) => {
         };
         logger.info('parameters is: ' + parameters);
         var result = await  azureApi.createOrUpdate(data.resourceGroupName, data.serviceName, data.apiId, data.tenantId, data.subscriptionId, data.swagger, data.basepath, data.clientId, data.clientSecret);
-        logger.info("result: " + result);
+        logger.info("result: " + result.toString());
     }
     
     //Following is a code snippet to fetch values from config file:
