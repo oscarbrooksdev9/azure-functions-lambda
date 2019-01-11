@@ -23,6 +23,7 @@ module.exports.handler = async (event, context) => {
 
     
     var data = event.data;
+    var result;
     if(event.action == "delete"){
         logger.info('attempting to delete an API Gateway' + event.resourceGroupName);
         azureApi.deleteApi(data.resourceGroupName, data.serviceName, data.apiId, data.tenantId, data.subscriptionId, data.clientId, data.clientSecret);
@@ -36,8 +37,13 @@ module.exports.handler = async (event, context) => {
           "path": data.basepath
         };
         logger.info('parameters is: ' + parameters);
-        var result = await  azureApi.createOrUpdate(data.resourceGroupName, data.serviceName, data.apiId, data.tenantId, data.subscriptionId, data.swagger, data.basepath, data.clientId, data.clientSecret);
-        logger.info("result: " + JSON.stringify(result));
+        result = azureApi.createOrUpdate(data.resourceGroupName, data.serviceName, data.apiId, data.tenantId, data.subscriptionId, data.swagger, data.basepath, data.clientId, data.clientSecret);
+        result.then(() => {
+            console.log("result: " + JSON.stringify(result));
+        })
+        .catch((error) => {
+            throw new Error("error: " + JSON.stringify(error));
+        });
     }
     
     //Following is a code snippet to fetch values from config file:
@@ -58,7 +64,7 @@ module.exports.handler = async (event, context) => {
       "configKeys": myVal
     };
 
-    return responseObj(sampleResponse, event);
+    return responseObj(result, event);
 
   } catch (e) {
     //Sample Error response for internal server error
