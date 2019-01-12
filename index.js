@@ -38,12 +38,10 @@ module.exports.handler = async (event, context) => {
         };
         logger.info('parameters is: ' + parameters);
         result = azureApi.createOrUpdate(data.resourceGroupName, data.serviceName, data.apiId, data.tenantId, data.subscriptionId, data.swagger, data.basepath, data.clientId, data.clientSecret);
-        result.then(() => {
-            console.log("result: " + JSON.stringify(result));
-        })
-        .catch((error) => {
-            throw new Error("error: " + JSON.stringify(error));
-        });
+        
+        // .catch((error) => {
+        //     throw new Error("error: " + JSON.stringify(error));
+        // });
     }
     
     //Following is a code snippet to fetch values from config file:
