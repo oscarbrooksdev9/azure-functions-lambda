@@ -29,7 +29,7 @@ module.exports.handler = async (event, context) => {
     // return result;
   } catch (e) {
     //Sample Error response for internal server error
-    return JSON.stringify(errorHandler.throwInternalServerError("Sample error message"));
+    return JSON.stringify(e);
   }
 return result;
 }
