@@ -36,6 +36,11 @@ module.exports.handler = async (event, context) => {
       body: error.message
     };
   }
-return result;
+  return  {
+      statusCode: 500,
+      body: error.message
+    };
+
+//return result;
 }
 
