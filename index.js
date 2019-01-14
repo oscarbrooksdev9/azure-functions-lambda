@@ -27,16 +27,17 @@ module.exports.handler = async (event, context) => {
         result = await azureApi.createOrUpdate(data.resourceGroupName, data.serviceName, data.apiId, data.tenantId, data.subscriptionId, data.swagger, data.basepath, data.clientId, data.clientSecret);
     }
     // return result;
-  } catch (error) {
-    // return JSON.stringify(error.message);
-    result = { 
-         'status':400, 
-         'error':{
-             'error_message' : 'your message',
-             'details' : JSON.stringify(error)
-          }
-     }
-  }
+  } 
+//   catch (error) {
+//     // return JSON.stringify(error.message);
+//     result = { 
+//          'status':400, 
+//          'error':{
+//              'error_message' : 'your message',
+//              'details' : JSON.stringify(error)
+//           }
+//      }
+//   }
   return result;
 }
 
