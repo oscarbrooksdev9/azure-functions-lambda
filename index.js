@@ -28,10 +28,13 @@ module.exports.handler = async (event, context) => {
     }
     // return result;
   } catch (error) {
-    return {
-      statusCode: 500,
-      body: JSON.stringify(error.message)
-    };
+    return JSON.stringify(error.message);
+    
+    
+    // return  {
+    //   statusCode: 500,
+    //   body: JSON.stringify(error.message)
+    // };
   }
 return result;
 }
