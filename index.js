@@ -27,10 +27,11 @@ module.exports.handler = async (event, context) => {
         result = await azureApi.createOrUpdate(data.resourceGroupName, data.serviceName, data.apiId, data.tenantId, data.subscriptionId, data.swagger, data.basepath, data.clientId, data.clientSecret);
     }
     // return result;
-  } catch (e) {
-    //Sample Error response for internal server error
-    return JSON.stringify(errorHandler.throwInternalServerError(e));
-  }
+  } catch (error) {
+    return {
+      statusCode: 500,
+      body: JSON.stringify(error.message)
+    };
 return result;
 }
 
