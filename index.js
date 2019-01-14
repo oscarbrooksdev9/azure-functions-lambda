@@ -16,7 +16,7 @@ module.exports.handler = async (event, context) => {
   //Initializations
   const config = configModule.getConfig(event, context);
   const errorHandler = errorHandlerModule();
-  logger.init(event, context);
+//   logger.init(event, context);
   var result;
   var data = event.data;
   try {
