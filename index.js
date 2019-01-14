@@ -29,18 +29,14 @@ module.exports.handler = async (event, context) => {
     // return result;
   } catch (error) {
     // return JSON.stringify(error.message);
-    
-    
-    return  {
-      statusCode: 500,
-      body: error
-    };
+    result = { 
+         'status':400, 
+         'error':{
+             'error_message' : 'your message',
+             'details' : 'your details'
+          }
+     }
   }
-  return  {
-      statusCode: 500,
-      body: error
-    };
-
-//return result;
+  return result;
 }
 
