@@ -33,7 +33,7 @@ module.exports.handler = async (event, context) => {
          'status':400, 
          'error':{
              'error_message' : 'your message',
-             'details' : 'your details'
+             'details' : error
           }
      }
   }
