@@ -19,6 +19,7 @@ async function createOrUpdate(resourceGroupName, serviceName, apiId, tenantId, s
           "contentValue": JSON.stringify(swaggerString),
           "path": basepath
         };
+        
      
    var credentials = await msRestAzure.loginWithServicePrincipalSecret(clientId, clientSecret, tenantId);
    const client = new ApiManagementClient(credentials, subscriptionId);
