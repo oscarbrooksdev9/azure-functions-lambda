@@ -6,16 +6,11 @@ module.exports = {
     createOrUpdate,
 }
 
-function deleteApi(resourceGroupName, serviceName, apiId, tenantId, subscriptionId, clientId, clientSecret) {
-    msRestAzure.loginWithServicePrincipalSecret(clientId, clientSecret, tenantId, function(err, credentials) {
-        if (err) return console.log(err);
-        const client = new ApiManagementClient(credentials, subscriptionId);
-        
-        client.api.deleteMethod(resourceGroupName, serviceName, apiId, "*", function(err, result) {
-          if (err) return console.log(err);
-          return console.log(result);
-        });
-      });
+async function deleteApi(resourceGroupName, serviceName, apiId, tenantId, subscriptionId, clientId, clientSecret) {
+   var credentials = await msRestAzure.loginWithServicePrincipalSecret(clientId, clientSecret, tenantId);
+   const client = new ApiManagementClient(credentials, subscriptionId);
+   var result = await client.api.deleteMethodWithHttpOperationResponse(resourceGroupName, serviceName, apiId, "*", null);
+   return result; 
 }
 
 async function createOrUpdate(resourceGroupName, serviceName, apiId, tenantId, subscriptionId, swaggerString, basepath, clientId, clientSecret) {
