@@ -28,5 +28,4 @@ async function createOrUpdate(resourceGroupName, serviceName, apiId, tenantId, s
         //   return result;
         // });
    return result;
-   
 }
