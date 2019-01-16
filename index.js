@@ -19,7 +19,6 @@ module.exports.handler = async (event, context) => {
 //   logger.init(event, context);
   var result;
   var data = event.data;
-  
   try {
     if(event.action == "delete"){
         result = await azureApi.deleteApi(data.resourceGroupName, data.serviceName, data.apiId, data.tenantId, data.subscriptionId, data.clientId, data.clientSecret);
