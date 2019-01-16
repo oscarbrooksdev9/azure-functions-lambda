@@ -28,6 +28,7 @@ module.exports.handler = async (event, context) => {
     }
     // return result;
   } 
+  
   catch (error) {
       throw(error);
     // return JSON.stringify(error.message);
