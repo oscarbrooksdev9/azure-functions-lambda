@@ -10,7 +10,7 @@ module.exports = {
     upload
 }
    
-async function upload(resourceGroup, subscriptionId, tenantId, b64string ) {
+async function upload(resourceGroup, subscriptionId, tenantId, b64string, siteName ) {
 
     var clientId = process.env.AZURE_CLIENT_ID;
     var clientSecret = process.env.AZURE_CLIENT_SECRET;
