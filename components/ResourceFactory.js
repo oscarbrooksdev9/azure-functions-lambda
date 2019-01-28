@@ -2,6 +2,7 @@ var msRestAzure = require('ms-rest-azure');
 const WebAppManagementClient = require('azure-arm-website');
 const resourceManagement = require('azure-arm-resource');
 const StorageManagementClient = require('azure-arm-storage');
+const ApiManagementClient = require("azure-arm-apimanagement");
 const utils = require('./utils');
 /**
  * 
