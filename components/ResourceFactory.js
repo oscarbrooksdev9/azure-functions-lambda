@@ -58,7 +58,7 @@ async function createStorageAccount(resourceGroupName, storageName, subscription
       accessTier: "Hot"
       };
     var storageManagementClient = new StorageManagementClient(credentials, subscriptionId);
-    var name = storageName + await utils.randomID();
+    var name = storageName.toLowerCase() + await utils.randomID();
     var nameAvailable = false;
     var attemptCounter = 0;
     while(attemptCounter < 20 && !nameAvailable){
