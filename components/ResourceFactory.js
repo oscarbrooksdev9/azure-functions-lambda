@@ -1,4 +1,3 @@
-var msRestAzure = require('ms-rest-azure');
 const WebAppManagementClient = require('azure-arm-website');
 const resourceManagement = require('azure-arm-resource');
 const StorageManagementClient = require('azure-arm-storage');
@@ -48,7 +47,7 @@ async function createHostingPlan(resourceGroupName, subscriptionId, credentials,
     return webAppManagementClient.appServicePlans.createOrUpdate(resourceGroupName, planName, info);
 }
 
-async function createStorageAccount(resourceGroupName, subscriptionId, credentials, tags = {}, skuName = 'Standard_LRS') {
+async function createStorageAccount(resourceGroupName, storageName, subscriptionId, credentials, tags = {}, skuName = 'Standard_LRS') {
     var options = {
       tags: tags,
       sku: {
@@ -59,7 +58,7 @@ async function createStorageAccount(resourceGroupName, subscriptionId, credentia
       accessTier: "Hot"
       };
     var storageManagementClient = new StorageManagementClient(credentials, subscriptionId);
-    var name = "testname" + await utils.randomID();
+    var name = storageName + await utils.randomID();
     var nameAvailable = false;
     var attemptCounter = 0;
     while(attemptCounter < 20 && !nameAvailable){
@@ -78,39 +77,27 @@ async function createStorageAccount(resourceGroupName, subscriptionId, credentia
     
 }
 
-async function createWebApp(resourceGroupName, appName, subscriptionId, credentials) {
-    // var appname = "somenewwebapp";
-    var envelope = {
-      tags: {
-        owner: "test",
-        environment: "test",
-        application: "test",
-        STAGE: "test",
-        service: "test",
-        domain: "test"
-      },
-      location: "westus",
-      kind: 'functionApp',
-      serverFarmId: "WestUSPlan",
-      properties: {
-      }
-    };
-
+async function createWebApp(resourceGroupName, appName, envelope, subscriptionId, credentials) {
     let webAppManagementClient = new WebAppManagementClient(credentials, subscriptionId);
     return webAppManagementClient.webApps.createOrUpdate(resourceGroupName, appName, envelope);
 }
 
-async function createFunctionApp(resourceGroupName, subscriptionId) {
+async function createFunctionApp(resourceGroupName, appName , subscriptionId, credentials, tags = { owner: "test",
+                                                                                                    environment: "test",
+                                                                                                    application: "test",
+                                                                                                    STAGE: "test",
+                                                                                                    service: "test",
+                                                                                                    domain: "test"
+                                                                                                }) {
     var envelope = {
-        name: "WestUSPlan",
-        location: "consumption-plan-location",
-        kind: 'app',
+        tags: tags,
+        location: "westus",
+        kind: 'functionApp',
         serverFarmId: "WestUSPlan",
         properties: {
         }
-    };
-    var webAppManagementClient = new WebAppManagementClient(credentials, subscriptionId);
-    return webAppManagementClient.webApps.createFunctionWithHttpOperationResponse(resourceGroupName, "WestUSPlan", "testappnamehere", envelope, null);
+      };
+    return await createWebApp(resourceGroupName, appName, envelope, subscriptionId, credentials);
 }
 
 async function listResourcesByTag(tagName,subscriptionId, credentials){
@@ -119,12 +106,12 @@ async function listResourcesByTag(tagName,subscriptionId, credentials){
   return resourcesByTags;
 }
 
-async function deleteResourcesByTag(tagName,subscriptionId, tenantId){
-  var resources = await listResourcesByTag(tagName, subscriptionId, tenantId );
+async function deleteResourcesByTag(tagName,subscriptionId, credentials){
+  var resources = await listResourcesByTag(tagName, subscriptionId, credentials );
   console.log(resources);
   resources.forEach(async function(resource){
-    var apiVersion = await getLatestApiVersionForResource(resource, subscriptionId, tenantId);
-    deleteResourcesById(resource,apiVersion, subscriptionId, tenantId);
+    var apiVersion = await getLatestApiVersionForResource(resource, subscriptionId, credentials);
+    deleteResourcesById(resource,apiVersion, subscriptionId, credentials);
   });
 }
 
@@ -162,20 +149,19 @@ async function createOrUpdateApiGatewayWithSwaggerJson(resourceGroupName, servic
  return result;
 }
 
-async function deleteApi(resourceGroupName, serviceName, apiId, tenantId, subscriptionId, clientId, clientSecret) {
-    var credentials = await msRestAzure.loginWithServicePrincipalSecret(clientId, clientSecret, tenantId);
+async function deleteApi(resourceGroupName, serviceName, apiId, credentials, subscriptionId) {
     const client = new ApiManagementClient(credentials, subscriptionId);
     var result = await client.api.deleteMethodWithHttpOperationResponse(resourceGroupName, serviceName, apiId, "*", null);
     return result;
  }
 
- async function upload(resourceGroup, subscriptionId, b64string) {
+ async function upload(resourceGroup, appName, subscriptionId, b64string, credentials) {
     var buffer = Buffer.from(b64string, 'base64');
     var stream = new Stream.PassThrough();
     stream.end(buffer);
     
     const client = await new webSiteManagementClient(credentials, subscriptionId, null, null);
-    var pubcreds = await client.webApps.listPublishingCredentials(resourceGroup,"jazzoscar-test-oscar-lambda-j-30-prod", null);
+    var pubcreds = await client.webApps.listPublishingCredentials(resourceGroup, appName, null);
        
         console.log("Trying to upload a file");
         var config = {
@@ -191,7 +177,7 @@ async function deleteApi(resourceGroupName, serviceName, apiId, tenantId, subscr
         };
            
        return await axios.put(
-            `https://jazzoscar-test-oscar-lambda-j-30-prod.scm.azurewebsites.net/api/zipdeploy`,
+            `https://${appName}.azurewebsites.net/api/zipdeploy`,
             stream,
             config
         ).then((response) => {
