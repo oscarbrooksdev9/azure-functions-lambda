@@ -3,7 +3,7 @@ const WebAppManagementClient = require('azure-arm-website');
 const resourceManagement = require('azure-arm-resource');
 const StorageManagementClient = require('azure-arm-storage');
 const ApiManagementClient = require("azure-arm-apimanagement");
-const utils = require('./utils');
+const utils = require('./Utils');
 /**
  * 
  * 
@@ -19,7 +19,8 @@ module.exports = {
     deleteResourcesById,
     getLatestApiVersionForResource,
     createOrUpdateApiGatewayWithSwaggerJson,
-    deleteApi
+    deleteApi,
+    upload
 }
 
 async function createResourceGroup(resourceGroupName, subscriptionId, credentials, location = 'westus', tags = {} ) {          
@@ -46,7 +47,6 @@ async function createHostingPlan(resourceGroupName, subscriptionId, credentials,
     var webAppManagementClient = new WebAppManagementClient(credentials, subscriptionId);
     return webAppManagementClient.appServicePlans.createOrUpdate(resourceGroupName, planName, info);
 }
-
 
 async function createStorageAccount(resourceGroupName, subscriptionId, credentials, tags = {}, skuName = 'Standard_LRS') {
     var options = {
@@ -113,14 +113,11 @@ async function createFunctionApp(resourceGroupName, subscriptionId) {
     return webAppManagementClient.webApps.createFunctionWithHttpOperationResponse(resourceGroupName, "WestUSPlan", "testappnamehere", envelope, null);
 }
 
-
-async function listResourcesByTag(tagName,subscriptionId, tenantId){
-  const credentials = await  msRestAzure.loginWithServicePrincipalSecret(clientId, clientSecret, tenantId);
+async function listResourcesByTag(tagName,subscriptionId, credentials){
   const client = new resourceManagement.ResourceManagementClient(credentials, subscriptionId);
   var resourcesByTags = await client.resources.list({filter: `tagName eq '${tagName}'`});
   return resourcesByTags;
 }
-
 
 async function deleteResourcesByTag(tagName,subscriptionId, tenantId){
   var resources = await listResourcesByTag(tagName, subscriptionId, tenantId );
@@ -131,26 +128,20 @@ async function deleteResourcesByTag(tagName,subscriptionId, tenantId){
   });
 }
 
-async function deleteResourcesById(resource, apiVersion, subscriptionId, tenantId){
-  var credentials = await  msRestAzure.loginWithServicePrincipalSecret(clientId, clientSecret, tenantId);
+async function deleteResourcesById(resource, apiVersion, subscriptionId, credentials){
   var client = new resourceManagement.ResourceManagementClient(credentials, subscriptionId);
   console.log("trying to delete" + resource.id);
   var result = await client.resources.deleteById(resource.id, apiVersion);
   console.log(result);
 }
 
-
-
-async function getLatestApiVersionForResource(resource,subscriptionId, tenantId){
-  var credentials = await  msRestAzure.loginWithServicePrincipalSecret(clientId, clientSecret, tenantId);
+async function getLatestApiVersionForResource(resource,subscriptionId, credentials){
   var client = new resourceManagement.ResourceManagementClient(credentials, subscriptionId);
   var providerNamespace = resource.type.split('/')[0];
   var providerType = resource.type.split('/')[1];
   var response = await client.providers.get(providerNamespace);
   var apiVersion;
-  console.log(response);
   var string = JSON.stringify(response);
-  var jsonObject = JSON.parse(string);
   response['resourceTypes'].forEach(function(resource){
     if(resource.resourceType === providerType){
       apiVersion = resource.apiVersions[0];
@@ -160,25 +151,59 @@ async function getLatestApiVersionForResource(resource,subscriptionId, tenantId)
   return apiVersion;
 }
 
-
-async function createOrUpdateApiGatewayWithSwaggerJson(resourceGroupName, serviceName, apiId, tenantId, subscriptionId, swaggerString, basepath, clientId, clientSecret) {
+async function createOrUpdateApiGatewayWithSwaggerJson(resourceGroupName, serviceName, apiId, credentials, subscriptionId, swaggerString, basepath) {
   var parameters = {
         "contentFormat": "swagger-json",
         "contentValue": JSON.stringify(swaggerString),
         "path": basepath
       };   
- var credentials = await msRestAzure.loginWithServicePrincipalSecret(clientId, clientSecret, tenantId);
  const client = new ApiManagementClient(credentials, subscriptionId);
  var result = await client.api.createOrUpdateWithHttpOperationResponse(resourceGroupName, serviceName, apiId, parameters, null);
  return result;
 }
 
-
 async function deleteApi(resourceGroupName, serviceName, apiId, tenantId, subscriptionId, clientId, clientSecret) {
     var credentials = await msRestAzure.loginWithServicePrincipalSecret(clientId, clientSecret, tenantId);
     const client = new ApiManagementClient(credentials, subscriptionId);
     var result = await client.api.deleteMethodWithHttpOperationResponse(resourceGroupName, serviceName, apiId, "*", null);
-    return result; 
+    return result;
  }
+
+ async function upload(resourceGroup, subscriptionId, b64string) {
+    var buffer = Buffer.from(b64string, 'base64');
+    var stream = new Stream.PassThrough();
+    stream.end(buffer);
+    
+    const client = await new webSiteManagementClient(credentials, subscriptionId, null, null);
+    var pubcreds = await client.webApps.listPublishingCredentials(resourceGroup,"jazzoscar-test-oscar-lambda-j-30-prod", null);
+       
+        console.log("Trying to upload a file");
+        var config = {
+            headers: {
+                Accept: '*/*'
+              },
+              auth: {
+                username: pubcreds.publishingUserName,
+                password: pubcreds.publishingPassword
+              },
+              encoding: null,
+              body: stream
+        };
+           
+       return await axios.put(
+            `https://jazzoscar-test-oscar-lambda-j-30-prod.scm.azurewebsites.net/api/zipdeploy`,
+            stream,
+            config
+        ).then((response) => {
+            console.log(response.status);
+            console.log(response.statusText);
+            console.log(response.data);
+        }).catch((error) => {
+            console.log(error.response.status);
+            console.log(error.response.statusText);
+            console.log(error.response.data);
+            console.log(error.response.data.error);
+        });
+    }
  
 
