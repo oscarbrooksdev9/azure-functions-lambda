@@ -26,7 +26,7 @@ module.exports.handler = async (event, context) => {
   var commandMapping = new CommandMapping();
 
   try {
-    result = await commandMapping.process(data);
+    result = await commandMapping.process(event);
 
     if(event.action == "delete"){
         result = await azureApi.deleteApi(data.resourceGroupName, data.serviceName, data.apiId, data.tenantId, data.subscriptionId, data.clientId, data.clientSecret);
