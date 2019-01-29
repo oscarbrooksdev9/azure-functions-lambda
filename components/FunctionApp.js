@@ -16,8 +16,8 @@ module.exports = class FunctionApp {
     async create(data){
         console.log(data);
         await this.login();
-        await ResourceFactory.createStorageAccount(data.resourceGroupName, this.subscriptionId, this.credentials);
-        await ResourceFactory.createHostingPlan(data.resourceGroupName, this.subscriptionId, this.credentials);
-        await ResourceFactory.createWebApp(data.resourceGroupName, data.appName, this.subscriptionId, this.credentials);
+        console.log(await ResourceFactory.createStorageAccount(data.resourceGroupName, this.subscriptionId, this.credentials));
+        console.log(await ResourceFactory.createHostingPlan(data.resourceGroupName, this.subscriptionId, this.credentials));
+        console.log(await ResourceFactory.createWebApp(data.resourceGroupName, data.appName, this.subscriptionId, this.credentials));
     }
 }
