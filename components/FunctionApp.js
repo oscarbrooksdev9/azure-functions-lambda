@@ -1,22 +1,22 @@
 const ResourceFactory = require('./ResourceFactory');
 
 module.exports = class FunctionApp {    
-    constructor(clientId, clientSecret, tenantId, subscriptionId){
-        this.subscriptionId = subscriptionId;
-        this.tenantId = tenantId;
-        this.clientId = clientId;
-        this.clientSecret = clientSecret;
-    }
-
-    async create(jsonData){
-        console.log(jsonData);
-        await this.login();
-        await ResourceFactory.createStorageAccount(resourceGroupName, this.subscriptionId, this.credentials);
-        await ResourceFactory.createHostingPlan(resourceGroupName, this.subscriptionId, this.credentials);
-        await ResourceFactory.createWebApp(resourceGroupName, appName, this.subscriptionId, this.credentials);
+    constructor(data){
+        this.subscriptionId = data.subscriptionId;
+        this.tenantId = data.tenantId;
+        this.clientId = data.clientId;
+        this.clientSecret = data.clientSecret;
     }
 
     async login(){
-        this.credentials = await msRestAzure.loginWithServicePrincipalSecret(clientId, clientSecret, tenantId);
+        this.credentials = await msRestAzure.loginWithServicePrincipalSecret(this.clientId, this.clientSecret, this.tenantId);
+    }
+
+    async create(data){
+        console.log(data);
+        await this.login();
+        await ResourceFactory.createStorageAccount(data.resourceGroupName, this.subscriptionId, this.credentials);
+        await ResourceFactory.createHostingPlan(data.resourceGroupName, this.subscriptionId, this.credentials);
+        await ResourceFactory.createWebApp(data.resourceGroupName, data.appName, this.subscriptionId, this.credentials);
     }
 }
