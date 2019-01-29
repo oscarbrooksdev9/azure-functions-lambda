@@ -24,6 +24,7 @@ module.exports = class CommandMapping {
     }
 
     async execute(payload){
+        console.log("this is the payload: " + JSON.stringify(payload));
         console.log(payload.command);
         return await this.instance[payload.command](payload.data);
     }
