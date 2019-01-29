@@ -20,6 +20,7 @@ module.exports.handler = async (event, context) => {
   var result;
   var data = event.data;
   logger.debug('Data is the following: ' + JSON.stringify(data));
+  logger.debug('Event is the following: ' + JSON.stringify(event));
 
 
   var commandMapping = new CommandMapping();
