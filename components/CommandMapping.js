@@ -8,25 +8,23 @@ module.exports = class CommandMapping {
         this.classList.set('FunctionApp', FunctionApp);
     }
 
-    async process(className, commandName){
-        this.instantiate(className);
-        return this.execute(commandName);
+    async process(data){
+        this.instantiate(data);
+        return this.execute(data);
     }
 
-
-
-    async instantiate(className){
-        if(this.classList.has(className)){
-        this.instance = new (this.classList.get(className))();
+    async instantiate(data){
+        if(this.classList.has(data.className)){
+        this.instance = new (this.classList.get(data.className))(data);
         }
         else{
-            var error = new Error(`Classname ${className} is not found.`);
+            var error = new Error(`Classname ${data.className} is not found.`);
             throw error;
         }
     }
 
-    async execute(command){
-        console.log(command);
-        return await this.instance[command]();
+    async execute(data){
+        console.log(data.command);
+        return await this.instance[data.command](data);
     }
 }
