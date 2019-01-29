@@ -8,7 +8,6 @@ const configModule = require("./components/config.js");
 const logger = require("./components/logger.js");
 const responseObj = require("./components/response.js");
 const errorHandlerModule = require("./components/error-handler.js");
-const azureApi = require("./components/azureApi.js");
 const CommandMapping = require("./components/CommandMapping.js"); 
 
 module.exports.handler = async (event, context) => {
@@ -27,15 +26,7 @@ module.exports.handler = async (event, context) => {
 
   try {
     result = await commandMapping.process(event);
-
-    if(event.action == "delete"){
-        result = await azureApi.deleteApi(data.resourceGroupName, data.serviceName, data.apiId, data.tenantId, data.subscriptionId, data.clientId, data.clientSecret);
-    }
-    else if(event.action == "create"){
-        result = await azureApi.createOrUpdate(data.resourceGroupName, data.serviceName, data.apiId, data.tenantId, data.subscriptionId, data.swagger, data.basepath, data.clientId, data.clientSecret);
-    }
   } 
-  
   catch (error) {
       throw(error);
   }
