@@ -1,4 +1,5 @@
 const ResourceFactory = require('./ResourceFactory');
+const msRestAzure = require('ms-rest-azure');
 
 module.exports = class FunctionApp {    
     constructor(data){
